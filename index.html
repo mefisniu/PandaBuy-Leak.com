@@ -35,9 +35,9 @@ function szukajDanych() {
                 li.textContent = JSON.stringify(fileData);
                 wyniki.appendChild(li);
             } else {
-                // Jeśli plik nie został znaleziony, wyświetl odpowiedni komunikat
+                // Jeśli plik nie został znaleziony, wyświetl komunikat o błędzie
                 var li = document.createElement("li");
-                li.textContent = "Brak danych dla miasta " + miasto;
+                li.textContent = "Błąd: Plik " + fileName + " nie został odnaleziony.";
                 wyniki.appendChild(li);
             }
         }

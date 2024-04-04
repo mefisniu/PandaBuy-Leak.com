@@ -4,6 +4,21 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Wyszukiwanie danych miasta</title>
+<style>
+    .columns {
+        display: flex;
+        flex-wrap: wrap;
+        padding: 0;
+        list-style-type: none;
+    }
+    .column {
+        flex: 1;
+        padding: 0 10px;
+    }
+    .column h3 {
+        margin-top: 0;
+    }
+</style>
 </head>
 <body>
 
@@ -13,13 +28,22 @@
 <input type="text" id="miasto">
 <button onclick="szukajDanych()">Szukaj</button>
 
-<ul id="wyniki"></ul>
+<div class="columns">
+    <div class="column" id="keys">
+        <h3>Klucze:</h3>
+    </div>
+    <div class="column" id="values">
+        <h3>Wartości:</h3>
+    </div>
+</div>
 
 <script>
 function szukajDanych() {
     var miasto = document.getElementById("miasto").value;
-    var wyniki = document.getElementById("wyniki");
-    wyniki.innerHTML = '';
+    var keysContainer = document.getElementById("keys");
+    var valuesContainer = document.getElementById("values");
+    keysContainer.innerHTML = '<h3>Klucze:</h3>';
+    valuesContainer.innerHTML = '<h3>Wartości:</h3>';
 
     // Utwórz nazwę pliku JSON zgodnie z podanym miastem
     var fileName = miasto + ".json";
@@ -31,14 +55,20 @@ function szukajDanych() {
             if (xhr.status == 200) {
                 // Jeśli plik został znaleziony, wyciągnij z niego dane
                 var fileData = JSON.parse(xhr.responseText);
-                var li = document.createElement("li");
-                li.textContent = JSON.stringify(fileData);
-                wyniki.appendChild(li);
+                Object.keys(fileData).forEach(function(key) {
+                    var keyElement = document.createElement("p");
+                    keyElement.textContent = key;
+                    keysContainer.appendChild(keyElement);
+
+                    var valueElement = document.createElement("p");
+                    valueElement.textContent = fileData[key];
+                    valuesContainer.appendChild(valueElement);
+                });
             } else {
                 // Jeśli plik nie został znaleziony, wyświetl komunikat o błędzie
-                var li = document.createElement("li");
-                li.textContent = "Błąd: Plik " + fileName + " nie został odnaleziony.";
-                wyniki.appendChild(li);
+                var errorElement = document.createElement("p");
+                errorElement.textContent = "Błąd: Plik " + fileName + " nie został odnaleziony.";
+                keysContainer.appendChild(errorElement);
             }
         }
     };

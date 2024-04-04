@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Formularz</title>
+<title>Przeszukiwanie pliku JSON</title>
 <style>
     body {
         font-family: Arial, sans-serif;
@@ -20,45 +20,48 @@
         border-radius: 8px;
         box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     }
-    .form-group {
-        margin-bottom: 20px;
+    ul {
+        list-style-type: none;
+        padding: 0;
+    }
+    li {
+        margin-bottom: 10px;
     }
     label {
-        display: block;
         font-weight: bold;
-        margin-bottom: 5px;
-    }
-    input[type="text"] {
-        width: 100%;
-        padding: 10px;
-        border: 1px solid #ccc;
-        border-radius: 5px;
-        box-sizing: border-box;
-    }
-    input[type="submit"] {
-        background-color: #007bff;
-        color: #fff;
-        border: none;
-        padding: 10px 20px;
-        border-radius: 5px;
-        cursor: pointer;
-    }
-    input[type="submit"]:hover {
-        background-color: #0056b3;
     }
 </style>
 </head>
 <body>
 
 <div class="container">
-    <form>
-        <div class="form-group">
-            <label for="miasto">Miasto:</label>
-            <input type="text" id="miasto" name="miasto" required>
-        </div>
-        <input type="submit" value="Wyślij">
-    </form>
+    <label for="fileInput">Wybierz plik JSON:</label>
+    <input type="file" id="fileInput" accept=".json">
+    <ul id="result"></ul>
 </div>
+
+<script>
+    document.getElementById('fileInput').addEventListener('change', function(event) {
+        var file = event.target.files[0];
+        var reader = new FileReader();
+        reader.onload = function(e) {
+            var data = JSON.parse(e.target.result);
+            displayData(data);
+        };
+        reader.readAsText(file);
+    });
+
+    function displayData(data) {
+        var resultContainer = document.getElementById('result');
+        resultContainer.innerHTML = ''; // Czyszczenie poprzedniego wyniku
+
+        Object.keys(data).forEach(function(key) {
+            var listItem = document.createElement('li');
+            listItem.innerHTML = '<label>' + key + ':</label> ' + data[key];
+            resultContainer.appendChild(listItem);
+        });
+    }
+</script>
 
 </body>
 </html>

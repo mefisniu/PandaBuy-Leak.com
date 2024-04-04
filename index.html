@@ -21,21 +21,28 @@ function szukajDanych() {
     var wyniki = document.getElementById("wyniki");
     wyniki.innerHTML = '';
 
-    // Przejście przez pliki JSON w folderze "leak"
+    // Utwórz nazwę pliku JSON zgodnie z podanym miastem
+    var fileName = miasto + ".json";
+
+    // Sprawdź, czy plik o podanej nazwie istnieje w folderze "leak"
     var xhr = new XMLHttpRequest();
     xhr.onreadystatechange = function() {
-        if (xhr.readyState == 4 && xhr.status == 200) {
-            var files = JSON.parse(xhr.responseText);
-            files.forEach(function(file) {
-                if ("Miasto" in file && file.Miasto === miasto) {
-                    var li = document.createElement("li");
-                    li.textContent = JSON.stringify(file);
-                    wyniki.appendChild(li);
-                }
-            });
+        if (xhr.readyState == 4) {
+            if (xhr.status == 200) {
+                // Jeśli plik został znaleziony, wyciągnij z niego dane
+                var fileData = JSON.parse(xhr.responseText);
+                var li = document.createElement("li");
+                li.textContent = JSON.stringify(fileData);
+                wyniki.appendChild(li);
+            } else {
+                // Jeśli plik nie został znaleziony, wyświetl odpowiedni komunikat
+                var li = document.createElement("li");
+                li.textContent = "Brak danych dla miasta " + miasto;
+                wyniki.appendChild(li);
+            }
         }
     };
-    xhr.open("GET", "leak/index.json", true); // Zakładamy, że pliki JSON są wymienione w pliku index.json
+    xhr.open("GET", "leak/" + fileName, true);
     xhr.send();
 }
 </script>

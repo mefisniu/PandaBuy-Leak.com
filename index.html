@@ -3,64 +3,41 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Przeszukiwanie pliku JSON</title>
-<style>
-    body {
-        font-family: Arial, sans-serif;
-        background-color: #f4f4f4;
-        margin: 0;
-        padding: 0;
-    }
-    .container {
-        width: 80%;
-        max-width: 600px;
-        margin: 50px auto;
-        background-color: #fff;
-        padding: 20px;
-        border-radius: 8px;
-        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    }
-    ul {
-        list-style-type: none;
-        padding: 0;
-    }
-    li {
-        margin-bottom: 10px;
-    }
-    label {
-        font-weight: bold;
-    }
-</style>
+<title>Wyszukiwanie danych miasta</title>
 </head>
 <body>
 
-<div class="container">
-    <label for="fileInput">Wybierz plik JSON:</label>
-    <input type="file" id="fileInput" accept=".json">
-    <ul id="result"></ul>
-</div>
+<h2>Wyszukiwanie danych miasta</h2>
+
+<label for="miasto">Podaj nazwę miasta:</label>
+<input type="text" id="miasto">
+<button onclick="szukajDanych()">Szukaj</button>
+
+<ul id="wyniki"></ul>
 
 <script>
-    document.getElementById('fileInput').addEventListener('change', function(event) {
-        var file = event.target.files[0];
-        var reader = new FileReader();
-        reader.onload = function(e) {
-            var data = JSON.parse(e.target.result);
-            displayData(data);
-        };
-        reader.readAsText(file);
-    });
+function szukajDanych() {
+    var miasto = document.getElementById("miasto").value;
+    var wyniki = document.getElementById("wyniki");
+    wyniki.innerHTML = '';
 
-    function displayData(data) {
-        var resultContainer = document.getElementById('result');
-        resultContainer.innerHTML = ''; // Czyszczenie poprzedniego wyniku
-
-        Object.keys(data).forEach(function(key) {
-            var listItem = document.createElement('li');
-            listItem.innerHTML = '<label>' + key + ':</label> ' + data[key];
-            resultContainer.appendChild(listItem);
-        });
-    }
+    // Przejście przez pliki JSON w folderze "leak"
+    var xhr = new XMLHttpRequest();
+    xhr.onreadystatechange = function() {
+        if (xhr.readyState == 4 && xhr.status == 200) {
+            var files = JSON.parse(xhr.responseText);
+            files.forEach(function(file) {
+                if ("Miasto" in file && file.Miasto === miasto) {
+                    var li = document.createElement("li");
+                    li.textContent = JSON.stringify(file);
+                    wyniki.appendChild(li);
+                }
+            });
+        }
+    };
+    xhr.open("GET", "leak/index.json", true); // Zakładamy, że pliki JSON są wymienione w pliku index.json
+    xhr.send();
+}
 </script>
 
 </body>

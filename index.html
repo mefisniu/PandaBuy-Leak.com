@@ -18,6 +18,10 @@
     .column h3 {
         margin-top: 0;
     }
+    input {
+        width: 100%;
+        margin-bottom: 10px;
+    }
 </style>
 </head>
 <body>
@@ -31,12 +35,15 @@
 <div class="columns">
     <div class="column" id="imie">
         <h3>Imię:</h3>
+        <input type="text" id="inputImie">
     </div>
     <div class="column" id="nazwisko">
         <h3>Nazwisko:</h3>
+        <input type="text" id="inputNazwisko">
     </div>
     <div class="column" id="nrTelefonu">
         <h3>Numer Telefonu:</h3>
+        <input type="text" id="inputNrTelefonu">
     </div>
 </div>
 
@@ -46,9 +53,10 @@ function szukajDanych() {
     var imieContainer = document.getElementById("imie");
     var nazwiskoContainer = document.getElementById("nazwisko");
     var nrTelefonuContainer = document.getElementById("nrTelefonu");
-    imieContainer.innerHTML = '<h3>Imię:</h3>';
-    nazwiskoContainer.innerHTML = '<h3>Nazwisko:</h3>';
-    nrTelefonuContainer.innerHTML = '<h3>Numer Telefonu:</h3>';
+
+    var inputImie = document.getElementById("inputImie");
+    var inputNazwisko = document.getElementById("inputNazwisko");
+    var inputNrTelefonu = document.getElementById("inputNrTelefonu");
 
     // Utwórz nazwę pliku JSON zgodnie z podanym miastem
     var fileName = miasto + ".json";
@@ -61,25 +69,19 @@ function szukajDanych() {
                 // Jeśli plik został znaleziony, wyciągnij z niego dane
                 var fileData = JSON.parse(xhr.responseText);
                 if ("Imie" in fileData) {
-                    var imieElement = document.createElement("p");
-                    imieElement.textContent = fileData["Imie"];
-                    imieContainer.appendChild(imieElement);
+                    inputImie.value = fileData["Imie"];
                 }
                 if ("Nazwisko" in fileData) {
-                    var nazwiskoElement = document.createElement("p");
-                    nazwiskoElement.textContent = fileData["Nazwisko"];
-                    nazwiskoContainer.appendChild(nazwiskoElement);
+                    inputNazwisko.value = fileData["Nazwisko"];
                 }
                 if ("Nr.Telefonu" in fileData) {
-                    var nrTelefonuElement = document.createElement("p");
-                    nrTelefonuElement.textContent = fileData["Nr.Telefonu"];
-                    nrTelefonuContainer.appendChild(nrTelefonuElement);
+                    inputNrTelefonu.value = fileData["Nr.Telefonu"];
                 }
             } else {
-                // Jeśli plik nie został znaleziony, wyświetl komunikat o błędzie
-                var errorElement = document.createElement("p");
-                errorElement.textContent = "Błąd: Plik " + fileName + " nie został odnaleziony.";
-                imieContainer.appendChild(errorElement);
+                // Jeśli plik nie został znaleziony, wyczyść pola tekstowe
+                inputImie.value = '';
+                inputNazwisko.value = '';
+                inputNrTelefonu.value = '';
             }
         }
     };
